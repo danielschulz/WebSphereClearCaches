@@ -24,6 +24,13 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
     @Parameter (defaultValue = "${project.webSphere.homeDirectory}", property = "wsHome", required = true)
     private File wsHome;
 
+    /**
+     * The version string for the WebSphere application server. In case it was not supplied the most likely setting
+     * will be used.
+     */
+    @Parameter (defaultValue = "${project.webSphere.version}", property = "wsVersion", required = false)
+    private String wsVersion;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -47,6 +54,9 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
             return false;
         }
 
+        if (wsHome.exists()) {
+
+        }
 
         // correctly passed all tests
         return true;

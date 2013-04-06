@@ -15,6 +15,7 @@
   <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.webSphere.homeDirectory>V:\ApplicationServers\IBM\WebSphere\</project.webSphere.homeDirectory>
+      <project.webSphere.version>6.1</project.webSphere.version>
   </properties>
 
   <dependencies>
