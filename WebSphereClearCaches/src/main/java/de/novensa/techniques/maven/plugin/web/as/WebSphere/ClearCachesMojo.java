@@ -1,5 +1,8 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.ExtractEffectivePaths;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.WebSphereVersionUtils.WebSphereVersionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -8,6 +11,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * This class is responsible for clearing th temp caches in WebSphere Application Servers.
@@ -29,19 +33,36 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
      * will be used.
      */
     @Parameter (defaultValue = "${project.webSphere.version}", property = "wsVersion", required = false)
-    private String wsVersion;
+    private String rawWsVersion;
+
+    private WebSphereVersion wsVersion = null;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        // prior detecting the WebSphere version -- this detecting may be defined when looking at the
+        // home directory structure in the upcoming phase to get the effective path
+        wsVersion = WebSphereVersionUtils.getWebSphereVersion(rawWsVersion);
+        if (null == wsVersion) {
+            getLog().warn(String.format(ErrorMessages.WEB_SPHERE_VERSION_WAS_NOT_FOUND, rawWsVersion));
+        }
+
+
+        try {
+            wsHome = ExtractEffectivePaths.getWsHome(wsHome, wsVersion);
+        } catch (IOException e) {
+            getLog().error(e.fillInStackTrace());
+        }
 
         if (doesWsHomeExists()) {
 
         } else {
             // wsHome cannot be null: iff so the 'doesWsHomeExists' reported an error and interrupted the
             // running execution
-            reportError(String.format(WEBSPHERE_HOME_WAS_NOT_FOUND, wsHome));
+            reportError(String.format(WEB_SPHERE_HOME_WAS_NOT_FOUND, wsHome));
         }
     }
+
 
     /**
      * Make sure the WebSphere´s home directory is being found and can be read and written to.
@@ -50,7 +71,7 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
      */
     private boolean doesWsHomeExists() throws MojoExecutionException, MojoFailureException {
         if (null == wsHome) {
-            reportError(WEBSPHERE_HOME_IS_NOT_PROVIDED);
+            reportError(WEB_SPHERE_HOME_IS_NOT_PROVIDED);
             return false;
         }
 
