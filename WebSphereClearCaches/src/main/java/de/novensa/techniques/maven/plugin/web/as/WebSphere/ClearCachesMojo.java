@@ -21,7 +21,7 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
     /**
      * The location the WebSphere is installed to.
      */
-    @Parameter (defaultValue = "${project.build.sourceDirectory}", property = "wsHome", required = true)
+    @Parameter (defaultValue = "${project.webSphere.homeDirectory}", property = "wsHome", required = true)
     private File wsHome;
 
     @Override
@@ -52,9 +52,9 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
         return true;
     }
 
-    private static final void reportError(final String errorMessage)
+    private final void reportError(final String errorMessage)
             throws MojoExecutionException, MojoFailureException {
 
-
+        getLog().error(errorMessage);
     }
 }
