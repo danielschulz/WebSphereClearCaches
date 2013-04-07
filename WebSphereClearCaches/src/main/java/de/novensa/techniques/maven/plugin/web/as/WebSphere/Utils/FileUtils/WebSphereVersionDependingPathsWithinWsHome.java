@@ -1,8 +1,8 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils;
 
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +26,7 @@ public class WebSphereVersionDependingPathsWithinWsHome implements RuntimeData {
 
 
     // technical aggregator for effective paths; no other fields will be needed from inside here
-    private Map<WebSphereVersion, String[]> pathsWithinWsHome =
-            new HashMap<WebSphereVersion, String[]>(Constants.SMALL_LIST_INIT_SIZE);
+    private Map<WebSphereVersion, String[]> pathsWithinWsHome = new HashMap<WebSphereVersion, String[]>(Constants.SMALL_LIST_INIT_SIZE);
 
 
     // get the desired map

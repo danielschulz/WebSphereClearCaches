@@ -23,6 +23,7 @@ public abstract class MavenLogger extends AbstractMojo {
      */
     public final void log(final Throwable throwable) throws MojoExecutionException, MojoFailureException {
         getLog().error(throwable);
+        throw new MojoExecutionException(throwable.getMessage());
     }
 
 

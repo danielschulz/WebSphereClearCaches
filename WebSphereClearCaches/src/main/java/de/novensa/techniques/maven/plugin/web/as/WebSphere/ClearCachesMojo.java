@@ -125,7 +125,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         mavenSummary();
     }
 
-    private void runTheScript() {
+    private void runTheScript() throws MojoFailureException, MojoExecutionException {
         final File scriptLocation;
         // if is Linux system
         if (null != OS_NAME && !OS_NAME.contains(WIN_OS)) {
@@ -139,10 +139,16 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             scriptLocation = null;
         }
 
-        runTheScript(new File("calc.exe"));
+        runNativeFile(scriptLocation);
     }
 
-    private void runTheScript(final File file) {
+    private void runNativeFile(final File file) throws MojoFailureException, MojoExecutionException {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec(file.getCanonicalPath());
+        } catch (IOException e) {
+            log(e);
+        }
     }
 
 
