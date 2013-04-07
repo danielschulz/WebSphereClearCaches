@@ -10,6 +10,9 @@ import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.WebSphereVersio
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +34,7 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.Lo
  * @phase install
  */
 @SuppressWarnings("UnusedDeclaration")
+@Mojo(name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
 public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMessages {
 
     /**
@@ -39,6 +43,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @parameter expression="${project.webSphere.homeDirectory}"
      * @required
      */
+    @Parameter (property = "wsHome", defaultValue = "${project.webSphere.homeDirectory}", required = true)
     private File wsHome;
 
     /**
@@ -47,6 +52,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      *
      * @parameter expression="${project.webSphere.version}"
      */
+    @Parameter (property = "wsVersion", defaultValue = "${project.webSphere.version}")
     private String wsVersion;
 
 
@@ -57,6 +63,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @parameter expression="${project.webSphere.appServerProfile}"
      * @required
      */
+    @Parameter (property = "appServerProfile", defaultValue = "${project.webSphere.appServerProfile}", required = true)
     private String appServerProfile;
 
     /**
@@ -66,6 +73,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @parameter expression="${project.webSphere.appServer}"
      * @required
      */
+    @Parameter (property = "appServer", defaultValue = "${project.webSphere.appServer}", required = true)
     private String appServer;
 
     /**
@@ -75,6 +83,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @parameter expression="${project.webSphere.cell}"
      * @required
      */
+    @Parameter (property = "cell", defaultValue = "${project.webSphere.cell}", required = true)
     private String cell;
 
     /**
@@ -84,6 +93,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @parameter expression="${project.webSphere.node}"
      * @required
      */
+    @Parameter (property = "node", defaultValue = "${project.webSphere.node}", required = true)
     private String node;
 
 
