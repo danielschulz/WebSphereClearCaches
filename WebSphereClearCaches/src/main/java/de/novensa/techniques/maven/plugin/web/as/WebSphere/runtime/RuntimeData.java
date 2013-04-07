@@ -9,6 +9,7 @@ package de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime;
 public interface RuntimeData {
 
     static final String LINE_BREAK = System.getProperty("line.separator");
+    static final String OS_NAME = System.getProperty("os.name");
     static final String TABULATOR = "\t";
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");

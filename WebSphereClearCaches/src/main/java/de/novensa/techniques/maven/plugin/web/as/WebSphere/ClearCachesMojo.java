@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.WIN_OS;
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.ERROR;
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.WARN;
 
@@ -81,6 +82,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
     private int cleanedCount = 0;
     private int filesToCleanCount = 0;
     private boolean ranTheScript = false;
+    private boolean scriptShallRun = true;
 
 
     @Override
@@ -115,7 +117,32 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             }
         }
 
+        // run the clear classes script if wished
+        if (scriptShallRun) {
+            runTheScript();
+        }
+
         mavenSummary();
+    }
+
+    private void runTheScript() {
+        final File scriptLocation;
+        // if is Linux system
+        if (null != OS_NAME && !OS_NAME.contains(WIN_OS)) {
+
+
+            scriptLocation = null;
+        }
+        // if is Windows system
+        else {
+
+            scriptLocation = null;
+        }
+
+        runTheScript(new File("calc.exe"));
+    }
+
+    private void runTheScript(final File file) {
     }
 
 
@@ -148,12 +175,12 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             }
         }
 
-        if (ranTheScript) {
+        // ranTheScript iff scriptShallRun
+        if (ranTheScript || !scriptShallRun) {
             log(LogLvl.INFO, result.toString());
         } else {
             log(LogLvl.WARN, result.toString());
         }
-
     }
 
 
