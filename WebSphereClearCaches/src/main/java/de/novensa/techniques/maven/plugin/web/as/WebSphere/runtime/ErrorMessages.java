@@ -23,6 +23,10 @@ public interface ErrorMessages {
             "take the information to the most close version to find. If the plugin fails this may be the cause. " +
             "The detected WebSphere version may be refined upon parsing the WebSphere´s home directory if needed.";
 
+    static final String WEB_SPHERE_VERSION_IS_EMPTY = "The version of the WebSphere was null. This may be due to a " +
+            "lacking configuration of the maven plugin. A consultation of the provided example files shall help " +
+            "solving this issue.";
+
     static final String DIRECTORY_DOES_NOT_EXIST = "The directory '%s' cannot be found.";
 
     static final String FILE_CANNOT_BE_RETRIEVED_ITS_CANONICAL_PATH_FROM = "The file '%s' cannot be retrieved it´s " +

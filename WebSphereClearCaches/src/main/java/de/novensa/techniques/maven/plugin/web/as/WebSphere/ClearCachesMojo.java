@@ -12,7 +12,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +28,8 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.Lo
  * consulting the mentioned script inside my WebSphere instance. This plugin helps in automating these tasks in your maven build chain.
  *
  * @author Daniel Schulz
+ *
+ * @goal clearCaches
  */
 @SuppressWarnings("UnusedDeclaration")
 @Mojo(name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
@@ -36,44 +37,50 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
 
     /**
      * The location the WebSphere is installed to.
+     *
+     * @parameter expression="${project.webSphere.homeDirectory}", property = "wsHome", required = true
      */
-    @Parameter(defaultValue = "${project.webSphere.homeDirectory}", property = "wsHome", required = true)
     private File wsHome;
 
     /**
      * The version string for the WebSphere application server. In case it was not supplied the most likely setting
      * will be used.
+     *
+     * @parameter expression="${project.webSphere.version}", property = "wsVersion", required = false
      */
-    @Parameter(defaultValue = "${project.webSphere.version}", property = "wsVersion", required = false)
-    private String rawWsVersion;
+    private String wsVersion;
 
 
     /**
      * This defines the name of your WebSphere´s AppServer profile. This is a technical value derived from IBM
      * application server techniques.
+     *
+     * @parameter expression="${project.webSphere.appServerProfile}", property = "appServerProfile", required = true
      */
-    @Parameter(defaultValue = "${project.webSphere.appServerProfile}", property = "appServerProfile", required = true)
     private String appServerProfile;
 
     /**
      * This defines the name of your WebSphere´s AppServer itself. Whereas the AppServer profile has another field to
      * be declared.  This is a technical value derived from IBM application server techniques.
+     *
+     * @parameter expression="${project.webSphere.appServer}", property = "appServer", required = true
      */
-    @Parameter(defaultValue = "${project.webSphere.appServer}", property = "appServer", required = true)
     private String appServer;
 
     /**
      * This defines the cell´s name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
+     *
+     * @parameter expression="${project.webSphere.cell}", property = "cell", required = true
      */
-    @Parameter(defaultValue = "${project.webSphere.cell}", property = "cell", required = true)
     private String cell;
 
     /**
      * This defines the cell´s node name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
+     *
+     * @parameter expression="${project.webSphere.node}", property = "node", required = true
      */
-    @Parameter(defaultValue = "${project.webSphere.node}", property = "node", required = true)
     private String node;
 
 
@@ -88,20 +95,25 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+
+        if (null == wsVersion) {
+            log(ERROR, WEB_SPHERE_VERSION_IS_EMPTY);
+        }
+
         // prior detecting the WebSphere version -- this detecting may be defined when looking at the
         // home directory structure in the upcoming phase to get the effective path
-        WebSphereVersion wsVersion = WebSphereVersionUtils.getWebSphereVersion(rawWsVersion);
-        if (null == wsVersion) {
-            log(WARN, String.format(WEB_SPHERE_VERSION_WAS_NOT_FOUND, rawWsVersion));
+        WebSphereVersion wsParsedVersion = WebSphereVersionUtils.getWebSphereVersion(wsVersion);
+        if (null == wsParsedVersion) {
+            log(ERROR, String.format(WEB_SPHERE_VERSION_WAS_NOT_FOUND, wsVersion));
         }
 
 
         String wsHomeCanonical = null;
         // figure out the WebSphere home directory
-        // if necessary the wsVersion will be corrected here -- but shall be rather seldom the case and there will
+        // if necessary the wsParsedVersion will be corrected here -- but shall be rather seldom the case and there will
         // occur an info log iff done so
         try {
-            wsHome = ExtractEffectivePaths.getWsHome(wsHome, wsVersion);
+            wsHome = ExtractEffectivePaths.getWsHome(wsHome, wsParsedVersion);
             wsHomeCanonical = wsHome.getCanonicalPath();
         } catch (IOException e) {
             log(e.fillInStackTrace());
@@ -109,7 +121,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
 
         if (null != wsHomeCanonical && isWsHomeDurable()) {
             final String[] listOfCleaningItems =
-                    (new WebSphereVersionDependingPathsWithinWsHome(wsVersion, appServer, cell, node))
+                    (new WebSphereVersionDependingPathsWithinWsHome(wsParsedVersion, appServer, cell, node))
                             .getPathsWithinWsHome();
 
             final String locationsRelSteam =
