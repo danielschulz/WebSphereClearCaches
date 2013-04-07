@@ -85,19 +85,45 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
         }
 
 
+        String wsHomeCanonical = null;
         // figure out the WebSphere home directory
         // if necessary the wsVersion will be corrected here -- but shall be rather seldom the case and there will
         // occur an info log iff done so
         try {
             wsHome = ExtractEffectivePaths.getWsHome(wsHome, wsVersion);
+            wsHomeCanonical = wsHome.getCanonicalPath();
         } catch (IOException e) {
             log(e.fillInStackTrace());
         }
 
-        if (isWsHomeDurable()) {
+        if (null != wsHomeCanonical && isWsHomeDurable()) {
             WebSphereVersionDependingPathsWithinWsHome pathsWithinWsHome =
                     new WebSphereVersionDependingPathsWithinWsHome(wsVersion, appServerProfile, appServer, cell, node);
             final String[] listOfCleaningItems = pathsWithinWsHome.getPathsWithinWsHome();
+
+            for (String cleaningItem : listOfCleaningItems) {
+                processFile(wsHomeCanonical + cleaningItem);
+            }
+        }
+    }
+
+    private void processFile(final String path) {
+
+        final File effectivePath = new File(path.endsWith(ANY_FILES_WITHIN) ?
+                path.substring(0, path.length() - ANY_FILES_WITHIN.length()) :
+                path);
+
+        if (!effectivePath.exists()) {
+            log(ERROR, String.format(ErrorMessages.DIRECTORY_DOES_NOT_EXIST, effectivePath));
+        }
+
+        if (path.endsWith(ANY_FILES_WITHIN)) {
+            // clear the folder items only
+            if (!(new File(path)).exists()) {
+
+            }
+        } else {
+            // clear the whole folder
         }
     }
 
@@ -130,8 +156,7 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
         getLog().error(throwable);
     }
 
-    public final void log(final LogLvl lvl, final String errorMessage)
-            throws MojoExecutionException, MojoFailureException {
+    public final void log(final LogLvl lvl, final String errorMessage) {
 
         switch (lvl) {
             case INFO:

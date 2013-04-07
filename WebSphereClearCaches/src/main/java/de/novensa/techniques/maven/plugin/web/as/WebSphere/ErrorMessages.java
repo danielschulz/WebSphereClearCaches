@@ -23,6 +23,8 @@ public interface ErrorMessages {
             "take the information to the most close version to find. If the plugin fails this may be the cause. " +
             "The detected WebSphere version may be refined upon parsing the WebSphere´s home directory if needed.";
 
+    static final String DIRECTORY_DOES_NOT_EXIST = "The directory '%s' cannot be found.";
+
     static final String DIRECTORY_CANNOT_BE_READ = "The directory '%s' cannot be read. Please provide read " +
             "privileges to at least this directory. Most likely both read and write privileges for the WebSphere " +
             "home directory will be helpful to succeed.";
