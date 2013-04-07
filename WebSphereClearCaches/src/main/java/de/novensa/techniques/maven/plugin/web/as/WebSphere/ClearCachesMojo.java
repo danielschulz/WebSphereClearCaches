@@ -19,12 +19,13 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl.W
 
 /**
  * This class is responsible for clearing th temp caches in WebSphere Application Servers. The procedure is based on the IBM document
- * http://www-01.ibm.com/support/docview.wss?uid=swg21460859 ,
- * http://www-01.ibm.com/support/docview.wss?uid=swg21607887, and
+ *  http://www-01.ibm.com/support/docview.wss?uid=swg21460859 ,
+ *  http://www-01.ibm.com/support/docview.wss?uid=swg21607887 , and
  * consulting the mentioned script inside my WebSphere instance. This plugin helps in automating these tasks in your maven build chain.
  *
  * @author Daniel Schulz
  */
+@SuppressWarnings("UnusedDeclaration")
 @Mojo (name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
 public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorMessages {
 
@@ -45,15 +46,31 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
     private WebSphereVersion wsVersion = null;
 
 
+    /**
+     * This defines the name of your WebSphere´s AppServer profile. This is a technical value derived from IBM
+     * application server techniques.
+     */
     @Parameter (defaultValue = "${project.webSphere.appServerProfile}", property = "appServerProfile", required = true)
     private String appServerProfile;
 
+    /**
+     * This defines the name of your WebSphere´s AppServer itself. Whereas the AppServer profile has another field to
+     * be declared.  This is a technical value derived from IBM application server techniques.
+     */
     @Parameter (defaultValue = "${project.webSphere.appServer}", property = "appServer", required = true)
     private String appServer;
 
+    /**
+     * This defines the cell´s name of your AppServer. This is a technical value derived from IBM application
+     * server techniques.
+     */
     @Parameter (defaultValue = "${project.webSphere.cell}", property = "cell", required = true)
     private String cell;
 
+    /**
+     * This defines the cell´s node name of your AppServer. This is a technical value derived from IBM application
+     * server techniques.
+     */
     @Parameter (defaultValue = "${project.webSphere.node}", property = "node", required = true)
     private String node;
 
@@ -78,12 +95,8 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
             log(e.fillInStackTrace());
         }
 
-        if (doesWsHomeExists()) {
+        if (isWsHomeDurable()) {
 
-        } else {
-            // wsHome cannot be null: iff so the 'doesWsHomeExists' reported an error and interrupted the
-            // running execution
-            log(ERROR, String.format(WEB_SPHERE_HOME_WAS_NOT_FOUND, wsHome));
         }
     }
 
@@ -93,14 +106,19 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
      *
      * @return True iff everything is in order; false otherwise.
      */
-    private boolean doesWsHomeExists() throws MojoExecutionException, MojoFailureException {
+    private boolean isWsHomeDurable() throws MojoExecutionException, MojoFailureException {
         if (null == wsHome) {
-            log(LogLvl.ERROR, WEB_SPHERE_HOME_IS_NOT_PROVIDED);
+            log(ERROR, WEB_SPHERE_HOME_IS_NOT_PROVIDED);
             return false;
         }
 
-        if (wsHome.exists()) {
+        // looks for an existing WebSphere home directory
+        if (!wsHome.exists()) {
+            log(ERROR, String.format(WEB_SPHERE_HOME_WAS_NOT_FOUND, wsHome));
+        }
 
+        if (!wsHome.canRead()) {
+            log(ERROR, String.format(DIRECTORY_CANNOT_BE_READ, wsHome));
         }
 
         // correctly passed all tests

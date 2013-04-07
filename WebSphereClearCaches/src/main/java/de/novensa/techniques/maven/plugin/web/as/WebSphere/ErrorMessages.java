@@ -22,4 +22,16 @@ public interface ErrorMessages {
             "found for the string '%s'. If this may be due to a too new version you can ignore this: the plugin will " +
             "take the information to the most close version to find. If the plugin fails this may be the cause. " +
             "The detected WebSphere version may be refined upon parsing the WebSphere´s home directory if needed.";
+
+    static final String DIRECTORY_CANNOT_BE_READ = "The directory '%s' cannot be read. Please provide read " +
+            "privileges to at least this directory. Most likely both read and write privileges for the WebSphere " +
+            "home directory will be helpful to succeed.";
+
+    static final String DIRECTORY_CANNOT_BE_WRITTEN = "The directory '%s' cannot be written to. Please provide write " +
+            "privileges to at least this directory. Most likely both read and write privileges for the WebSphere " +
+            "home directory will be helpful to succeed.";
+
+    static final String FILE_OR_FOLDER_CANNOT_BE_CLEANED_BUT_PRIVILEGES_GRANTED =
+            "The resource at '%s' cannot be cleaned. It may be in use because the privileges needed seem to be " +
+                    "granted.";
 }
