@@ -25,6 +25,9 @@ public interface ErrorMessages {
 
     static final String DIRECTORY_DOES_NOT_EXIST = "The directory '%s' cannot be found.";
 
+    static final String FILE_CANNOT_BE_RETRIEVED_ITS_CANONICAL_PATH_FROM = "The file '%s' cannot be retrieved it´s " +
+            "canonical path from.";
+
     static final String DIRECTORY_CANNOT_BE_READ = "The directory '%s' cannot be read. Please provide read " +
             "privileges to at least this directory. Most likely both read and write privileges for the WebSphere " +
             "home directory will be helpful to succeed.";
@@ -33,7 +36,13 @@ public interface ErrorMessages {
             "privileges to at least this directory. Most likely both read and write privileges for the WebSphere " +
             "home directory will be helpful to succeed.";
 
-    static final String FILE_OR_FOLDER_CANNOT_BE_CLEANED_BUT_PRIVILEGES_GRANTED =
+    static final String RESOURCE_CANNOT_BE_CLEANED_BUT_PRIVILEGES_GRANTED =
             "The resource at '%s' cannot be cleaned. It may be in use because the privileges needed seem to be " +
                     "granted.";
+
+    static final String RESOURCE_IS_STILL_OR_JUST_CLEAN = "the resource '%s' is still or just clean. " +
+            "Therefore nothing was done.";
+
+    static final String SCRIPT_HAS_NOT_BEEN_EXECUTED = "The script to clear the class caches has not been run. You " +
+            "may run this script on your shell by running '%s'.";
 }

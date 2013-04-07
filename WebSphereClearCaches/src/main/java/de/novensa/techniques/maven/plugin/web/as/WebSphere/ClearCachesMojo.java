@@ -7,6 +7,7 @@ import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphere
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.ExtractEffectivePaths;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.WebSphereVersionUtils.WebSphereVersionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -19,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.WIN_OS;
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.ERROR;
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.WARN;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.*;
 
 /**
  * This class is responsible for clearing th temp caches in WebSphere Application Servers. The procedure is based on the IBM document
@@ -239,14 +239,39 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             log(ERROR, String.format(DIRECTORY_CANNOT_BE_WRITTEN, file));
         }
 
+        // is still or just clean
+        if (!file.exists()) {
+            log(INFO, String.format(RESOURCE_IS_STILL_OR_JUST_CLEAN, file));
+            cleanedCount++;
+            return;
+        }
+
+
         // delete when everything is fine
-        if (file.delete()) {
+        if (forceDeleteResource(file)) {
             // record successful cleaned file
             cleanedCount++;
         } else {
             // when the file was not deleted
-            log(WARN, FILE_OR_FOLDER_CANNOT_BE_CLEANED_BUT_PRIVILEGES_GRANTED);
+            log(WARN, String.format(RESOURCE_CANNOT_BE_CLEANED_BUT_PRIVILEGES_GRANTED, file));
             persistedFiles.add(file);
+        }
+    }
+
+    private boolean forceDeleteResource(final File file) throws MojoFailureException, MojoExecutionException {
+        if (file.isDirectory()) {
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                try {
+                    log(WARN, String.format(SCRIPT_HAS_NOT_BEEN_EXECUTED, file.getCanonicalPath()));
+                } catch (IOException e1) {
+                    log(DEBUG, String.format(FILE_CANNOT_BE_RETRIEVED_ITS_CANONICAL_PATH_FROM, file.toString()));
+                }
+            }
+            return !file.exists();
+        } else {
+            return file.delete();
         }
     }
 
