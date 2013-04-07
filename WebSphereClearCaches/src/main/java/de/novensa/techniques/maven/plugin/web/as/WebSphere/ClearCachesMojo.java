@@ -10,8 +10,6 @@ import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.WebSphereVersio
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,15 +28,16 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.Lo
  * @author Daniel Schulz
  *
  * @goal clearCaches
+ * @phase install
  */
 @SuppressWarnings("UnusedDeclaration")
-@Mojo(name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
 public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMessages {
 
     /**
      * The location the WebSphere is installed to.
      *
-     * @parameter expression="${project.webSphere.homeDirectory}", property = "wsHome", required = true
+     * @parameter expression="${project.webSphere.homeDirectory}"
+     * @required
      */
     private File wsHome;
 
@@ -46,7 +45,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * The version string for the WebSphere application server. In case it was not supplied the most likely setting
      * will be used.
      *
-     * @parameter expression="${project.webSphere.version}", property = "wsVersion", required = false
+     * @parameter expression="${project.webSphere.version}"
      */
     private String wsVersion;
 
@@ -55,7 +54,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * This defines the name of your WebSphere´s AppServer profile. This is a technical value derived from IBM
      * application server techniques.
      *
-     * @parameter expression="${project.webSphere.appServerProfile}", property = "appServerProfile", required = true
+     * @parameter expression="${project.webSphere.appServerProfile}"
+     * @required
      */
     private String appServerProfile;
 
@@ -63,7 +63,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * This defines the name of your WebSphere´s AppServer itself. Whereas the AppServer profile has another field to
      * be declared.  This is a technical value derived from IBM application server techniques.
      *
-     * @parameter expression="${project.webSphere.appServer}", property = "appServer", required = true
+     * @parameter expression="${project.webSphere.appServer}"
+     * @required
      */
     private String appServer;
 
@@ -71,7 +72,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * This defines the cell´s name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
      *
-     * @parameter expression="${project.webSphere.cell}", property = "cell", required = true
+     * @parameter expression="${project.webSphere.cell}"
+     * @required
      */
     private String cell;
 
@@ -79,7 +81,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * This defines the cell´s node name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
      *
-     * @parameter expression="${project.webSphere.node}", property = "node", required = true
+     * @parameter expression="${project.webSphere.node}"
+     * @required
      */
     private String node;
 
@@ -95,10 +98,23 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        // just warn and stop on real problem -- some missing values may not cause the task to be impossible and may
+        // be learned to solve on runtime in future versions
+        if (null == wsHome || null == wsVersion ||
+                null == appServerProfile || null == appServer || null == cell || null == node) {
+            log(WARN, PLUGIN_REQUIRED_FIELDS_NOT_PROVIDED);
+        }
+
+
+        // real problem that will case the plugin to terminate
+        if (null == wsHome) {
+            log(ERROR, WEB_SPHERE_HOME_IS_NOT_PROVIDED);
+        }
 
         if (null == wsVersion) {
             log(ERROR, WEB_SPHERE_VERSION_IS_EMPTY);
         }
+
 
         // prior detecting the WebSphere version -- this detecting may be defined when looking at the
         // home directory structure in the upcoming phase to get the effective path

@@ -12,6 +12,12 @@ public interface ErrorMessages {
             "a valid path in your OS and can be recognized by your JVM currently running maven. The example files " +
             "may be helpful in solving this issue.";
 
+    static final String PLUGIN_REQUIRED_FIELDS_NOT_PROVIDED = "This plugin needs some parameter in order to work " +
+            "correctly. Please make sure you provide WebSphere´s home directory (wsHome), the version of your " +
+            "application server (wsVersion), the application server profile (appServerProfile), the identifier " +
+            "(appServer), the cell (cell), and it´s node (node). Either one of them missing will hardly work and " +
+            "therefore will cause this plugin to terminate.";
+
     static final String WEB_SPHERE_HOME_IS_NOT_PROVIDED = "The field wsHome´s value was detected being null. " +
             "This indicates it has not been provided or a typo occured in it´s declaration. Please make sure the " +
             "field <wsHome>directory</wsHome> is pointing to the WebSphere´s installation directory and can " +
