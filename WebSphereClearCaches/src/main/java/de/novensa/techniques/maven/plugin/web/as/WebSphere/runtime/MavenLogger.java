@@ -1,6 +1,6 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**

@@ -1,11 +1,11 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.WebSphereVersionUtils;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.WebSphereVersionUtils;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.WebSphereVersion.*;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion.*;
 
 /**
  * THis class delivers utilities to parse the WebSphere version from the pom.xml without any prior

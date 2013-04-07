@@ -1,4 +1,4 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime;
 
 /**
  * This interface supplies the running plugin with JVM-specific, OS-specific, and other information.

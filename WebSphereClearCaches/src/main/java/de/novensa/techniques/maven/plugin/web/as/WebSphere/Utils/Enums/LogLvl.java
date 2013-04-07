@@ -1,4 +1,4 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums;
 
 /**
  * The needed logging levels from maven in this plugin.

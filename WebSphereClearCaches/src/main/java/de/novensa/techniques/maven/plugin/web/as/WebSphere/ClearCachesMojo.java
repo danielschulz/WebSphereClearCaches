@@ -1,9 +1,12 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.WebSphereVersion;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.ExtractEffectivePaths;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.WebSphereVersionUtils.WebSphereVersionUtils;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.ErrorMessages;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.MavenLogger;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.ExtractEffectivePaths;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.WebSphereVersionUtils.WebSphereVersionUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -13,8 +16,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.io.File;
 import java.io.IOException;
 
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl.ERROR;
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl.WARN;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.ERROR;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.WARN;
 
 /**
  * This class is responsible for clearing th temp caches in WebSphere Application Servers. The procedure is based on the IBM document
