@@ -74,6 +74,6 @@ public abstract class ExtractEffectivePaths implements RuntimeData {
     @SuppressWarnings("UnusedParameters")
     protected static void refineWebSphereVersion(File file, WebSphereVersion version) {
         // does the file structure match the version?
-        // TODO: this can be done in future versions
+        // this can be done in future versions
     }
 }
