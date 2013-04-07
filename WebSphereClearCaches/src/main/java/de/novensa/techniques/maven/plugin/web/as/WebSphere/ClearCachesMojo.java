@@ -176,13 +176,12 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             result.append(String.format(InfoMessages.MAVEN_SUMMARY_SCRIPT_FAILED, cleanedCount, filesToCleanCount));
         }
 
+        if (null != persistedFiles) {
+            // possibly add details about persisted files iff there are some
+            if (persistedFiles.size() > 0) {
 
-        // possibly add details about persisted files iff there are some
-        if (persistedFiles.size() > 0) {
-
-            final String separator = LINE_BREAK + TABULATOR + TABULATOR + TABULATOR;
-            Joiner joiner = Joiner.on(separator);
-            if (null != persistedFiles) {
+                final String separator = LINE_BREAK + TABULATOR + TABULATOR + TABULATOR;
+                Joiner joiner = Joiner.on(separator);
                 result.append(separator).append(joiner.join(persistedFiles));
             }
         }
