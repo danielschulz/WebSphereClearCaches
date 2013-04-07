@@ -1,11 +1,9 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.WebSphereVersion;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.ExtractEffectivePaths;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.WebSphereVersionUtils.WebSphereVersionUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -28,8 +26,7 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl.W
  */
 @SuppressWarnings("UnusedDeclaration")
 @Mojo (name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
-public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorMessages {
-
+public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMessages {
 
     /**
      * The location the WebSphere is installed to.
@@ -150,33 +147,5 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
 
         // correctly passed all tests
         return true;
-    }
-
-    public final void log(final Throwable throwable) {
-        getLog().error(throwable);
-    }
-
-    public final void log(final LogLvl lvl, final String errorMessage) {
-
-        switch (lvl) {
-            case INFO:
-                getLog().info(errorMessage);
-                break;
-
-            case WARN:
-                getLog().warn(errorMessage);
-                break;
-
-            case DEBUG:
-                getLog().debug(errorMessage);
-                break;
-
-            case ERROR:
-                getLog().error(errorMessage);
-                break;
-
-            default:
-                getLog().info(errorMessage);
-        }
     }
 }
