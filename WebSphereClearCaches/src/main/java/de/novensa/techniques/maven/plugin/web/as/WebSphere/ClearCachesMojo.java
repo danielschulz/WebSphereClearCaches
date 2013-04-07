@@ -24,27 +24,27 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.Lo
 
 /**
  * This class is responsible for clearing th temp caches in WebSphere Application Servers. The procedure is based on the IBM document
- *  http://www-01.ibm.com/support/docview.wss?uid=swg21460859 ,
- *  http://www-01.ibm.com/support/docview.wss?uid=swg21607887 , and
+ * http://www-01.ibm.com/support/docview.wss?uid=swg21460859 ,
+ * http://www-01.ibm.com/support/docview.wss?uid=swg21607887 , and
  * consulting the mentioned script inside my WebSphere instance. This plugin helps in automating these tasks in your maven build chain.
  *
  * @author Daniel Schulz
  */
 @SuppressWarnings("UnusedDeclaration")
-@Mojo (name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
+@Mojo(name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
 public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMessages {
 
     /**
      * The location the WebSphere is installed to.
      */
-    @Parameter (defaultValue = "${project.webSphere.homeDirectory}", property = "wsHome", required = true)
+    @Parameter(defaultValue = "${project.webSphere.homeDirectory}", property = "wsHome", required = true)
     private File wsHome;
 
     /**
      * The version string for the WebSphere application server. In case it was not supplied the most likely setting
      * will be used.
      */
-    @Parameter (defaultValue = "${project.webSphere.version}", property = "wsVersion", required = false)
+    @Parameter(defaultValue = "${project.webSphere.version}", property = "wsVersion", required = false)
     private String rawWsVersion;
 
 
@@ -52,28 +52,28 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * This defines the name of your WebSphere´s AppServer profile. This is a technical value derived from IBM
      * application server techniques.
      */
-    @Parameter (defaultValue = "${project.webSphere.appServerProfile}", property = "appServerProfile", required = true)
+    @Parameter(defaultValue = "${project.webSphere.appServerProfile}", property = "appServerProfile", required = true)
     private String appServerProfile;
 
     /**
      * This defines the name of your WebSphere´s AppServer itself. Whereas the AppServer profile has another field to
      * be declared.  This is a technical value derived from IBM application server techniques.
      */
-    @Parameter (defaultValue = "${project.webSphere.appServer}", property = "appServer", required = true)
+    @Parameter(defaultValue = "${project.webSphere.appServer}", property = "appServer", required = true)
     private String appServer;
 
     /**
      * This defines the cell´s name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
      */
-    @Parameter (defaultValue = "${project.webSphere.cell}", property = "cell", required = true)
+    @Parameter(defaultValue = "${project.webSphere.cell}", property = "cell", required = true)
     private String cell;
 
     /**
      * This defines the cell´s node name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
      */
-    @Parameter (defaultValue = "${project.webSphere.node}", property = "node", required = true)
+    @Parameter(defaultValue = "${project.webSphere.node}", property = "node", required = true)
     private String node;
 
 
@@ -108,36 +108,40 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         }
 
         if (null != wsHomeCanonical && isWsHomeDurable()) {
-            final String[] listOfCleaningItems = (new WebSphereVersionDependingPathsWithinWsHome(
-                    wsVersion, appServerProfile, appServer, cell, node))
-                    .getPathsWithinWsHome();
+            final String[] listOfCleaningItems =
+                    (new WebSphereVersionDependingPathsWithinWsHome(wsVersion, appServer, cell, node))
+                            .getPathsWithinWsHome();
+
+            final String locationsRelSteam =
+                    FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR;
+            final String wsHomeProfileStem =
+                    wsHomeCanonical +
+                    locationsRelSteam;// location´s relative stem -- what does not change for any cleaning item
 
             for (String cleaningItem : listOfCleaningItems) {
-                processFile(wsHomeCanonical + cleaningItem);
+                processFile(wsHomeProfileStem + cleaningItem);
+            }
+
+
+            // run the clear classes script if wished
+            if (scriptShallRun) {
+                runTheScript(wsHomeProfileStem);
             }
         }
 
-        // run the clear classes script if wished
-        if (scriptShallRun) {
-            runTheScript();
-        }
 
         mavenSummary();
     }
 
-    private void runTheScript() throws MojoFailureException, MojoExecutionException {
+    private void runTheScript(final String scriptLocationProfileStem)
+            throws MojoFailureException, MojoExecutionException {
+
         final File scriptLocation;
-        // if is Linux system
-        if (null != OS_NAME && !OS_NAME.contains(WIN_OS)) {
+        // if is Linux system (check not to be Windows): true; otherwise iff is "Windows" something then false
+        final boolean unixFileStyle = null != OS_NAME && !OS_NAME.contains(WIN_OS);
 
-
-            scriptLocation = null;
-        }
-        // if is Windows system
-        else {
-
-            scriptLocation = null;
-        }
+        scriptLocation = new File(scriptLocationProfileStem +
+                WebSphereVersionDependingPathsWithinWsHome.getScriptLocation(unixFileStyle));
 
         runNativeFile(scriptLocation);
     }
@@ -146,7 +150,9 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         Runtime runtime = Runtime.getRuntime();
         try {
             runtime.exec(file.getCanonicalPath());
+            ranTheScript = true;
         } catch (IOException e) {
+            ranTheScript = false;
             log(e);
         }
     }
@@ -157,8 +163,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * the clearClasses script ran or not.
      *
      * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
-     * of the plugin
-     * @throws MojoFailureException This exception will be thrown when there´s a date mistaken
+     *                                of the plugin
+     * @throws MojoFailureException   This exception will be thrown when there´s a date mistaken
      */
     private void mavenSummary() throws MojoFailureException, MojoExecutionException {
 
@@ -251,10 +257,10 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * are null the base string will be returned even iff null. The same will happen if the <code>endingString</code>
      * is not the last part of the <code>baseString</code>.
      *
-     * @param baseString The base string ending with the endingString
+     * @param baseString   The base string ending with the endingString
      * @param endingString The suffix of the baseString
      * @return The baseString without the endingString; e.g.
-     * dropEndingString("Albert Einstein", "Einstein") -> "Albert ")
+     *         dropEndingString("Albert Einstein", "Einstein") -> "Albert ")
      */
     public static String dropEndingString(final String baseString, final String endingString) {
         if (null != baseString && null != endingString && baseString.endsWith(endingString)) {
