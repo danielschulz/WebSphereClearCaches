@@ -1,5 +1,6 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.WebSphereVersion;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.ExtractEffectivePaths;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.WebSphereVersionUtils.WebSphereVersionUtils;
@@ -13,8 +14,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.io.File;
 import java.io.IOException;
 
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl.ERROR;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl.WARN;
+
 /**
- * This class is responsible for clearing th temp caches in WebSphere Application Servers.
+ * This class is responsible for clearing th temp caches in WebSphere Application Servers. The procedure is based on the IBM document
+ * http://www-01.ibm.com/support/docview.wss?uid=swg21460859 ,
+ * http://www-01.ibm.com/support/docview.wss?uid=swg21607887, and
+ * consulting the mentioned script inside my WebSphere instance. This plugin helps in automating these tasks in your maven build chain.
  *
  * @author Daniel Schulz
  */
@@ -37,6 +44,20 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
 
     private WebSphereVersion wsVersion = null;
 
+
+    @Parameter (defaultValue = "${project.webSphere.appServerProfile}", property = "appServerProfile", required = true)
+    private String appServerProfile;
+
+    @Parameter (defaultValue = "${project.webSphere.appServer}", property = "appServer", required = true)
+    private String appServer;
+
+    @Parameter (defaultValue = "${project.webSphere.cell}", property = "cell", required = true)
+    private String cell;
+
+    @Parameter (defaultValue = "${project.webSphere.node}", property = "node", required = true)
+    private String node;
+
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -44,14 +65,17 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
         // home directory structure in the upcoming phase to get the effective path
         wsVersion = WebSphereVersionUtils.getWebSphereVersion(rawWsVersion);
         if (null == wsVersion) {
-            getLog().warn(String.format(ErrorMessages.WEB_SPHERE_VERSION_WAS_NOT_FOUND, rawWsVersion));
+            log(WARN, String.format(ErrorMessages.WEB_SPHERE_VERSION_WAS_NOT_FOUND, rawWsVersion));
         }
 
 
+        // figure out the WebSphere home directory
+        // if necessary the wsVersion will be corrected here -- but shall be rather seldom the case and there will
+        // occur an info log iff done so
         try {
             wsHome = ExtractEffectivePaths.getWsHome(wsHome, wsVersion);
         } catch (IOException e) {
-            getLog().error(e.fillInStackTrace());
+            log(e.fillInStackTrace());
         }
 
         if (doesWsHomeExists()) {
@@ -59,7 +83,7 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
         } else {
             // wsHome cannot be null: iff so the 'doesWsHomeExists' reported an error and interrupted the
             // running execution
-            reportError(String.format(WEB_SPHERE_HOME_WAS_NOT_FOUND, wsHome));
+            log(ERROR, String.format(WEB_SPHERE_HOME_WAS_NOT_FOUND, wsHome));
         }
     }
 
@@ -71,7 +95,7 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
      */
     private boolean doesWsHomeExists() throws MojoExecutionException, MojoFailureException {
         if (null == wsHome) {
-            reportError(WEB_SPHERE_HOME_IS_NOT_PROVIDED);
+            log(LogLvl.ERROR, WEB_SPHERE_HOME_IS_NOT_PROVIDED);
             return false;
         }
 
@@ -83,9 +107,32 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
         return true;
     }
 
-    private final void reportError(final String errorMessage)
+    public final void log(final Throwable throwable) {
+        getLog().error(throwable);
+    }
+
+    public final void log(final LogLvl lvl, final String errorMessage)
             throws MojoExecutionException, MojoFailureException {
 
-        getLog().error(errorMessage);
+        switch (lvl) {
+            case INFO:
+                getLog().info(errorMessage);
+                break;
+
+            case WARN:
+                getLog().warn(errorMessage);
+                break;
+
+            case DEBUG:
+                getLog().debug(errorMessage);
+                break;
+
+            case ERROR:
+                getLog().error(errorMessage);
+                break;
+
+            default:
+                getLog().info(errorMessage);
+        }
     }
 }
