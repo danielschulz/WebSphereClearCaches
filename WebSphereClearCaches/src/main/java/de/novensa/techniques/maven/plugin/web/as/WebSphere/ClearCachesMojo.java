@@ -74,6 +74,11 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
     private String node;
 
 
+    // technical members
+    private int cleanedCount = 0;
+    private int filesToCleanCount = 0;
+
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -81,7 +86,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         // home directory structure in the upcoming phase to get the effective path
         WebSphereVersion wsVersion = WebSphereVersionUtils.getWebSphereVersion(rawWsVersion);
         if (null == wsVersion) {
-            log(WARN, String.format(ErrorMessages.WEB_SPHERE_VERSION_WAS_NOT_FOUND, rawWsVersion));
+            log(WARN, String.format(WEB_SPHERE_VERSION_WAS_NOT_FOUND, rawWsVersion));
         }
 
 
@@ -107,23 +112,74 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         }
     }
 
+
+    /**
+     * Takes care of the individual files. Makes sure the are existing, can be read, and written. The path may
+     * contain an indicator to delete all files within. Therefore this ending from
+     * <code>RuntimeData.ANY_FILES_WITHIN</code> must be dropped with the method <code>dropEndingString</code>.
+     *
+     * @param path The current complete file string to the folder (make sure to drop the ending to take any files
+     *             within if it is present)
+     */
     private void processFile(final String path) {
 
-        final File effectivePath = new File(path.endsWith(ANY_FILES_WITHIN) ?
-                path.substring(0, path.length() - ANY_FILES_WITHIN.length()) :
-                path);
+        final File effectivePath = new File(dropEndingString(path, ANY_FILES_WITHIN));
 
         if (!effectivePath.exists()) {
-            log(ERROR, String.format(ErrorMessages.DIRECTORY_DOES_NOT_EXIST, effectivePath));
+            log(ERROR, String.format(DIRECTORY_DOES_NOT_EXIST, effectivePath));
         }
 
         if (path.endsWith(ANY_FILES_WITHIN)) {
             // clear the folder items only
-            if (!(new File(path)).exists()) {
+            if (effectivePath.exists()) {
+                final File[] files = effectivePath.listFiles();
+                filesToCleanCount += files.length;
 
+                for (File file : files) {
+                    cleanFile(file);
+                }
+            } else {
+                log(ERROR, String.format(DIRECTORY_DOES_NOT_EXIST, effectivePath));
             }
         } else {
             // clear the whole folder
+            filesToCleanCount++;
+            cleanFile(effectivePath);
+        }
+    }
+
+    private void cleanFile(final File file) {
+        // check permissions
+        if (!file.canWrite()) {
+            log(ERROR, String.format(DIRECTORY_CANNOT_BE_WRITTEN, file));
+        }
+
+        // delete when everything is fine
+        if (file.delete()) {
+            // record successful cleaned file
+            cleanedCount++;
+        } else {
+            // when the file was not deleted
+            log(WARN, FILE_OR_FOLDER_CANNOT_BE_CLEANED_BUT_PRIVILEGES_GRANTED);
+        }
+    }
+
+
+    /**
+     * Cuts the <code>endingString</code> form the <code>baseString</code>. If either one is null or both of the two
+     * are null the base string will be returned even iff null. The same will happen if the <code>endingString</code>
+     * is not the last part of the <code>baseString</code>.
+     *
+     * @param baseString The base string ending with the endingString
+     * @param endingString The suffix of the baseString
+     * @return The baseString without the endingString; e.g.
+     * dropEndingString("Albert Einstein", "Einstein") -> "Albert ")
+     */
+    private static String dropEndingString(final String baseString, final String endingString) {
+        if (null != baseString && null != endingString && baseString.endsWith(endingString)) {
+            return baseString.substring(0, baseString.length() - endingString.length());
+        } else {
+            return baseString;
         }
     }
 
