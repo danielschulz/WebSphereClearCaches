@@ -1,5 +1,6 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
+import com.google.common.base.Joiner;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.*;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
@@ -113,7 +114,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
                 processFile(wsHomeCanonical + cleaningItem);
             }
         }
-        
+
         mavenSummary();
     }
 
@@ -127,11 +128,32 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @throws MojoFailureException This exception will be thrown when there´s a date mistaken
      */
     private void mavenSummary() throws MojoFailureException, MojoExecutionException {
+
+        // make the heading summary
+        final StringBuilder result = new StringBuilder();
         if (ranTheScript) {
-            log(LogLvl.INFO, String.format(InfoMessages.MAVEN_SUMMARY_SCRIPT_RAN, cleanedCount, filesToCleanCount));
+            result.append(String.format(InfoMessages.MAVEN_SUMMARY_SCRIPT_RAN, cleanedCount, filesToCleanCount));
         } else {
-            log(LogLvl.WARN, String.format(InfoMessages.MAVEN_SUMMARY_SCRIPT_FAILED, cleanedCount, filesToCleanCount));
+            result.append(String.format(InfoMessages.MAVEN_SUMMARY_SCRIPT_FAILED, cleanedCount, filesToCleanCount));
         }
+
+
+        // possibly add details about persisted files iff there are some
+        if (persistedFiles.size() > 0) {
+
+            final String separator = LINE_BREAK + TABULATOR + TABULATOR + TABULATOR;
+            Joiner joiner = Joiner.on(separator);
+            if (null != persistedFiles) {
+                result.append(separator).append(joiner.join(persistedFiles));
+            }
+        }
+
+        if (ranTheScript) {
+            log(LogLvl.INFO, result.toString());
+        } else {
+            log(LogLvl.WARN, result.toString());
+        }
+
     }
 
 

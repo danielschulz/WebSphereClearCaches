@@ -1,5 +1,6 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils;
 
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
 
@@ -26,7 +27,7 @@ public class WebSphereVersionDependingPathsWithinWsHome implements RuntimeData {
 
     // technical aggregator for effective paths; no other fields will be needed from inside here
     private Map<WebSphereVersion, String[]> pathsWithinWsHome =
-            new HashMap<WebSphereVersion, String[]>(32);
+            new HashMap<WebSphereVersion, String[]>(Constants.SMALL_LIST_INIT_SIZE);
 
 
     // get the desired map
@@ -71,12 +72,15 @@ public class WebSphereVersionDependingPathsWithinWsHome implements RuntimeData {
     protected void populateMapFromInstances() {
         pathsWithinWsHome.put(WAS_6v1, new String[]{
 
-                "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
+                FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
                         "temp" + FILE_SEPARATOR + node + FILE_SEPARATOR + appServer,
 
-                "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR + "wstemp" + ANY_FILES_WITHIN,
-                "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
-                        "tranlog" + FILE_SEPARATOR + cell + FILE_SEPARATOR + node + appServer + FILE_SEPARATOR
+                FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
+                        "wstemp" + ANY_FILES_WITHIN,
+
+                FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
+                        "tranlog" + FILE_SEPARATOR + cell + FILE_SEPARATOR + node + FILE_SEPARATOR +
+                        appServer + FILE_SEPARATOR
         });
     }
 }
