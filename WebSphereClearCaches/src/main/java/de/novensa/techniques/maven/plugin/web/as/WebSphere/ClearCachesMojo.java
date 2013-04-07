@@ -3,6 +3,7 @@ package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.LogLvl;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.Enums.WebSphereVersion;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.ExtractEffectivePaths;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.WebSphereVersionUtils.WebSphereVersionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -43,8 +44,6 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
     @Parameter (defaultValue = "${project.webSphere.version}", property = "wsVersion", required = false)
     private String rawWsVersion;
 
-    private WebSphereVersion wsVersion = null;
-
 
     /**
      * This defines the name of your WebSphere´s AppServer profile. This is a technical value derived from IBM
@@ -80,7 +79,7 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
 
         // prior detecting the WebSphere version -- this detecting may be defined when looking at the
         // home directory structure in the upcoming phase to get the effective path
-        wsVersion = WebSphereVersionUtils.getWebSphereVersion(rawWsVersion);
+        WebSphereVersion wsVersion = WebSphereVersionUtils.getWebSphereVersion(rawWsVersion);
         if (null == wsVersion) {
             log(WARN, String.format(ErrorMessages.WEB_SPHERE_VERSION_WAS_NOT_FOUND, rawWsVersion));
         }
@@ -96,7 +95,9 @@ public class ClearCachesMojo extends AbstractMojo implements RuntimeData, ErrorM
         }
 
         if (isWsHomeDurable()) {
-
+            WebSphereVersionDependingPathsWithinWsHome pathsWithinWsHome =
+                    new WebSphereVersionDependingPathsWithinWsHome(wsVersion, appServerProfile, appServer, cell, node);
+            final String[] listOfCleaningItems = pathsWithinWsHome.getPathsWithinWsHome();
         }
     }
 

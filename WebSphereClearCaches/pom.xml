@@ -16,6 +16,11 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.webSphere.homeDirectory>V:\ApplicationServers\IBM\WebSphere\</project.webSphere.homeDirectory>
       <project.webSphere.version>6.1</project.webSphere.version>
+      <!-- IBM name definitions -->
+      <project.webSphere.appServerProfile>AppSrv01</project.webSphere.appServerProfile>
+      <project.webSphere.appServer>server1</project.webSphere.appServer>
+      <project.webSphere.cell>MSGN539KNode01Cell</project.webSphere.cell>
+      <project.webSphere.node>MSGN539KNode01</project.webSphere.node>
   </properties>
 
   <dependencies>
