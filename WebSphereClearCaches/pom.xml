@@ -9,17 +9,10 @@
 
     <name>WebSphereClearCaches Maven Plugin</name>
     <url>http://www.novensa.de</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.webSphere.homeDirectory>D:\PUBLIC\CI-00\Servers\WAS-6.1\AppServer</project.webSphere.homeDirectory>
-        <project.webSphere.version>6.1</project.webSphere.version>
-        <!-- IBM name definitions -->
-        <project.webSphere.appServerProfile>AppSrv01</project.webSphere.appServerProfile>
-        <project.webSphere.appServer>server1</project.webSphere.appServer>
-        <project.webSphere.cell>MSGN539KNode01Cell</project.webSphere.cell>
-        <project.webSphere.node>MSGN539KNode01</project.webSphere.node>
-    </properties>
+    <!--
+        github.com:
+        https://github.com/danielschulz/WebSphereClearCaches
+     -->
 
     <dependencies>
         <dependency>
