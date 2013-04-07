@@ -209,7 +209,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         final File effectivePath = new File(dropEndingString(path, ANY_FILES_WITHIN));
 
         if (!effectivePath.exists()) {
-            log(DEBUG, String.format(DIRECTORY_DOES_NOT_EXIST, effectivePath));
+            log(INFO, String.format(DIRECTORY_DOES_NOT_EXIST, effectivePath));
             cleanedCount++;
             filesToCleanCount++;
             return;
