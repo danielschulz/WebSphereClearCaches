@@ -7,6 +7,8 @@ import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphere
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.SCRIPT_LOCATION_WITHIN_WS_HOME;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.UNIX_AND_WINDOWS_SCRIPT_EXTENSIONS;
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion.WAS_6v1;
 
 /**
@@ -19,7 +21,6 @@ public class WebSphereVersionDependingPathsWithinWsHome implements RuntimeData {
 
     // field members just to fill the map from
     private final WebSphereVersion version;
-    private final String appServerProfile;
     private final String appServer;
     private final String cell;
     private final String node;
@@ -37,17 +38,15 @@ public class WebSphereVersionDependingPathsWithinWsHome implements RuntimeData {
 
     // constructor
     public WebSphereVersionDependingPathsWithinWsHome(final WebSphereVersion version,
-                                                      final String appServerProfile,
                                                       final String appServer,
                                                       final String cell,
                                                       final String node) {
 
         this.version = getCastingForWebSphereVersionToWebSphereFolderVersionStyle(version);
-        this.appServerProfile = appServerProfile;
         this.appServer = appServer;
         this.cell = cell;
         this.node = node;
-        
+
         populateMapFromInstances();
     }
 
@@ -71,15 +70,16 @@ public class WebSphereVersionDependingPathsWithinWsHome implements RuntimeData {
     protected void populateMapFromInstances() {
         pathsWithinWsHome.put(WAS_6v1, new String[]{
 
-                FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
-                        "temp" + FILE_SEPARATOR + node + FILE_SEPARATOR + appServer,
+                "temp" + FILE_SEPARATOR + node + FILE_SEPARATOR + appServer,
 
-                FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
-                        "wstemp" + ANY_FILES_WITHIN,
+                "wstemp" + ANY_FILES_WITHIN,
 
-                FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR +
-                        "tranlog" + FILE_SEPARATOR + cell + FILE_SEPARATOR + node + FILE_SEPARATOR +
+                "tranlog" + FILE_SEPARATOR + cell + FILE_SEPARATOR + node + FILE_SEPARATOR +
                         appServer + FILE_SEPARATOR
         });
+    }
+
+    public static String getScriptLocation(boolean unixFileStyle) {
+        return String.format(SCRIPT_LOCATION_WITHIN_WS_HOME, UNIX_AND_WINDOWS_SCRIPT_EXTENSIONS[unixFileStyle ? 0 : 1]);
     }
 }

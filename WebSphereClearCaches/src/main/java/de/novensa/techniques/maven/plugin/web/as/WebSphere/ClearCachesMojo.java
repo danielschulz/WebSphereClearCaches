@@ -239,9 +239,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             log(ERROR, String.format(DIRECTORY_CANNOT_BE_WRITTEN, file));
         }
 
-        // TODO: correct this
         // delete when everything is fine
-        if (true /*file.delete()*/) {
+        if (file.delete()) {
             // record successful cleaned file
             cleanedCount++;
         } else {
