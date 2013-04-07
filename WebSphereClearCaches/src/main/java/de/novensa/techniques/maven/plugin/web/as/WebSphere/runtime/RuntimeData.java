@@ -9,8 +9,8 @@ package de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime;
 public interface RuntimeData {
 
     static final String LINE_BREAK = System.getProperty("line.separator");
+
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
     static final String ANY_FILES_WITHIN = FILE_SEPARATOR + ":*:";              // tells the plugin just to clear the
     // contained files but not the folder itself
-
 }

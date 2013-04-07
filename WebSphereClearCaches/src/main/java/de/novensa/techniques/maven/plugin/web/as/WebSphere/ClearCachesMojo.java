@@ -1,8 +1,7 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.ErrorMessages;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.MavenLogger;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.*;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.ExtractEffectivePaths;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
@@ -15,6 +14,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.ERROR;
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.WARN;
@@ -75,8 +76,10 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
 
 
     // technical members
+    private List<File> persistedFiles = new ArrayList<File>(Constants.SMALL_LIST_INIT_SIZE);
     private int cleanedCount = 0;
     private int filesToCleanCount = 0;
+    private boolean ranTheScript = false;
 
 
     @Override
@@ -102,13 +105,32 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         }
 
         if (null != wsHomeCanonical && isWsHomeDurable()) {
-            WebSphereVersionDependingPathsWithinWsHome pathsWithinWsHome =
-                    new WebSphereVersionDependingPathsWithinWsHome(wsVersion, appServerProfile, appServer, cell, node);
-            final String[] listOfCleaningItems = pathsWithinWsHome.getPathsWithinWsHome();
+            final String[] listOfCleaningItems = (new WebSphereVersionDependingPathsWithinWsHome(
+                    wsVersion, appServerProfile, appServer, cell, node))
+                    .getPathsWithinWsHome();
 
             for (String cleaningItem : listOfCleaningItems) {
                 processFile(wsHomeCanonical + cleaningItem);
             }
+        }
+        
+        mavenSummary();
+    }
+
+
+    /**
+     * This method summarizes the runtime in the maven log. There will be information about cleaned files and whether
+     * the clearClasses script ran or not.
+     *
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     * of the plugin
+     * @throws MojoFailureException This exception will be thrown when there´s a date mistaken
+     */
+    private void mavenSummary() throws MojoFailureException, MojoExecutionException {
+        if (ranTheScript) {
+            log(LogLvl.INFO, String.format(InfoMessages.MAVEN_SUMMARY_SCRIPT_RAN, cleanedCount, filesToCleanCount));
+        } else {
+            log(LogLvl.WARN, String.format(InfoMessages.MAVEN_SUMMARY_SCRIPT_FAILED, cleanedCount, filesToCleanCount));
         }
     }
 
@@ -121,7 +143,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @param path The current complete file string to the folder (make sure to drop the ending to take any files
      *             within if it is present)
      */
-    private void processFile(final String path) {
+    private void processFile(final String path) throws MojoFailureException, MojoExecutionException {
 
         final File effectivePath = new File(dropEndingString(path, ANY_FILES_WITHIN));
 
@@ -133,10 +155,12 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             // clear the folder items only
             if (effectivePath.exists()) {
                 final File[] files = effectivePath.listFiles();
-                filesToCleanCount += files.length;
+                if (null != files) {
+                    filesToCleanCount += files.length;
 
-                for (File file : files) {
-                    cleanFile(file);
+                    for (File file : files) {
+                        cleanFile(file);
+                    }
                 }
             } else {
                 log(ERROR, String.format(DIRECTORY_DOES_NOT_EXIST, effectivePath));
@@ -148,19 +172,21 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         }
     }
 
-    private void cleanFile(final File file) {
+    private void cleanFile(final File file) throws MojoFailureException, MojoExecutionException {
         // check permissions
         if (!file.canWrite()) {
             log(ERROR, String.format(DIRECTORY_CANNOT_BE_WRITTEN, file));
         }
 
+        // TODO: correct this
         // delete when everything is fine
-        if (file.delete()) {
+        if (true /*file.delete()*/) {
             // record successful cleaned file
             cleanedCount++;
         } else {
             // when the file was not deleted
             log(WARN, FILE_OR_FOLDER_CANNOT_BE_CLEANED_BUT_PRIVILEGES_GRANTED);
+            persistedFiles.add(file);
         }
     }
 
@@ -175,7 +201,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * @return The baseString without the endingString; e.g.
      * dropEndingString("Albert Einstein", "Einstein") -> "Albert ")
      */
-    private static String dropEndingString(final String baseString, final String endingString) {
+    public static String dropEndingString(final String baseString, final String endingString) {
         if (null != baseString && null != endingString && baseString.endsWith(endingString)) {
             return baseString.substring(0, baseString.length() - endingString.length());
         } else {
@@ -198,10 +224,12 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         // looks for an existing WebSphere home directory
         if (!wsHome.exists()) {
             log(ERROR, String.format(WEB_SPHERE_HOME_WAS_NOT_FOUND, wsHome));
+            return false;
         }
 
         if (!wsHome.canRead()) {
             log(ERROR, String.format(DIRECTORY_CANNOT_BE_READ, wsHome));
+            return false;
         }
 
         // correctly passed all tests

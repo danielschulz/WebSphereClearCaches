@@ -1,7 +1,8 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.ClearCachesMojo;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,8 +62,7 @@ public abstract class ExtractEffectivePaths implements RuntimeData {
 
             canonicalPath = file.getCanonicalPath();
             if (canonicalPath.endsWith(current)) {
-                file = new File(canonicalPath.substring(0,
-                        canonicalPath.length() - current.length()) + EXPECTED_WS_HOME_ENDING);
+                file = new File(ClearCachesMojo.dropEndingString(canonicalPath, current) + EXPECTED_WS_HOME_ENDING);
             }
         }
 
