@@ -29,8 +29,6 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.Lo
  * consulting the mentioned script inside my WebSphere instance. This plugin helps in automating these tasks in your maven build chain.
  *
  * @author Daniel Schulz
- *
- * @goal clearCache
  */
 @SuppressWarnings("UnusedDeclaration")
 @Mojo(name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
@@ -155,6 +153,12 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
                     wsHomeCanonical +
                     locationsRelSteam;// location´s relative stem -- what does not change for any cleaning item
 
+            final File wsHomeProfileStemFile = new File(wsHomeProfileStem);
+            if (!wsHomeProfileStemFile.exists()) {
+                throw new IllegalStateException(String.format(ErrorMessages.PROFILES_DIRECTORY_DOES_NOT_EXIST,
+                        appServerProfile, locationsRelSteam));
+            }
+
             for (String cleaningItem : listOfCleaningItems) {
                 processFile(wsHomeProfileStem + cleaningItem);
             }
@@ -245,6 +249,10 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         final File effectivePath = new File(dropEndingString(path, ANY_FILES_WITHIN));
 
         if (!effectivePath.exists()) {
+            // look for the parent to exist
+            possiblyReportNotExistingParent(effectivePath.getParentFile());
+
+            // only iff parent was there -- else this is an exception and we are not here any more
             log(INFO, String.format(DIRECTORY_DOES_NOT_EXIST, effectivePath));
             cleanedCount++;
             filesToCleanCount++;
@@ -256,6 +264,9 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             if (effectivePath.exists()) {
                 final File[] files = effectivePath.listFiles();
                 if (null != files) {
+                    // check for existing parent
+                    possiblyReportNotExistingParent(effectivePath);
+
                     filesToCleanCount += files.length;
 
                     for (File file : files) {
@@ -266,9 +277,18 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
                 log(ERROR, String.format(DIRECTORY_DOES_NOT_EXIST, effectivePath));
             }
         } else {
+            // check for existing parent
+            possiblyReportNotExistingParent(effectivePath.getParentFile());
+
             // clear the whole folder
             filesToCleanCount++;
             cleanFile(effectivePath);
+        }
+    }
+
+    private void possiblyReportNotExistingParent(final File effectivePath) {
+        if (!effectivePath.exists() || !effectivePath.isDirectory()) {
+            throw new IllegalStateException(String.format(ErrorMessages.DIRECTORY_DOES_NOT_EXIST, effectivePath));
         }
     }
 

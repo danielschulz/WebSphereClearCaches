@@ -35,6 +35,9 @@ public interface ErrorMessages {
 
     static final String DIRECTORY_DOES_NOT_EXIST = "The directory '%s' cannot be found.";
 
+    static final String PROFILES_DIRECTORY_DOES_NOT_EXIST = "The profiles directory for the profile '%s' is not located in " +
+            "'%s' where it is expected.";
+
     static final String FILE_CANNOT_BE_RETRIEVED_ITS_CANONICAL_PATH_FROM = "The file '%s' cannot be retrieved it´s " +
             "canonical path from.";
 
