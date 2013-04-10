@@ -322,11 +322,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             try {
                 FileUtils.deleteDirectory(file);
             } catch (IOException e) {
-                try {
-                    log(WARN, String.format(SCRIPT_HAS_NOT_BEEN_EXECUTED, file.getCanonicalPath()));
-                } catch (IOException e1) {
-                    log(DEBUG, String.format(FILE_CANNOT_BE_RETRIEVED_ITS_CANONICAL_PATH_FROM, file.toString()));
-                }
+                return false;
             }
             return !file.exists();
         } else {
