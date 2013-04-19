@@ -30,26 +30,26 @@ import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.Lo
  *
  * @author Daniel Schulz
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "JavaDoc"})
 @Mojo(name = "clearCaches", defaultPhase = LifecyclePhase.INSTALL)
 public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMessages {
 
     /**
      * The location the WebSphere is installed to.
      *
-     * @parameter property="project.webSphere.homeDirectory"
+     * @parameter property="wsHome"
      * @required
      */
-    @Parameter (property = "wsHome", defaultValue = "project.webSphere.homeDirectory", required = true)
+    @Parameter (property = "wsHome", defaultValue = "wsHome", required = true)
     private File wsHome;
 
     /**
      * The version string for the WebSphere application server. In case it was not supplied the most likely setting
      * will be used.
      *
-     * @parameter property="project.webSphere.version"
+     * @parameter property="wsVersion"
      */
-    @Parameter (property = "wsVersion", defaultValue = "project.webSphere.version")
+    @Parameter (property = "wsVersion", defaultValue = "wsVersion")
     private String wsVersion;
 
 
@@ -57,40 +57,40 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * This defines the name of your WebSphere´s AppServer profile. This is a technical value derived from IBM
      * application server techniques.
      *
-     * @parameter property="project.webSphere.appServerProfile"
+     * @parameter property="appServerProfile"
      * @required
      */
-    @Parameter (property = "appServerProfile", defaultValue = "project.webSphere.appServerProfile", required = true)
+    @Parameter (property = "appServerProfile", defaultValue = "appServerProfile", required = true)
     private String appServerProfile;
 
     /**
      * This defines the name of your WebSphere´s AppServer itself. Whereas the AppServer profile has another field to
      * be declared.  This is a technical value derived from IBM application server techniques.
      *
-     * @parameter property="project.webSphere.appServer"
+     * @parameter property="appServer"
      * @required
      */
-    @Parameter (property = "appServer", defaultValue = "project.webSphere.appServer", required = true)
+    @Parameter (property = "appServer", defaultValue = "appServer", required = true)
     private String appServer;
 
     /**
      * This defines the cell´s name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
      *
-     * @parameter property="project.webSphere.cell"
+     * @parameter property="cell"
      * @required
      */
-    @Parameter (property = "cell", defaultValue = "project.webSphere.cell", required = true)
+    @Parameter (property = "cell", defaultValue = "cell", required = true)
     private String cell;
 
     /**
      * This defines the cell´s node name of your AppServer. This is a technical value derived from IBM application
      * server techniques.
      *
-     * @parameter property="project.webSphere.node"
+     * @parameter property="node"
      * @required
      */
-    @Parameter (property = "node", defaultValue = "project.webSphere.node", required = true)
+    @Parameter (property = "node", defaultValue = "node", required = true)
     private String node;
 
 
