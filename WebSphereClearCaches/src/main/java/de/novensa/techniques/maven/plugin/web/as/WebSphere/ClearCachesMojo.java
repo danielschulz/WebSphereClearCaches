@@ -401,7 +401,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      *
      * @return True iff everything is in order; false otherwise.
      */
-    private boolean isWsHomeDurable() throws MojoExecutionException, MojoFailureException {
+    protected boolean isWsHomeDurable() throws MojoExecutionException, MojoFailureException {
         if (null == wsHome) {
             log(ERROR, WEB_SPHERE_HOME_IS_NOT_PROVIDED);
             return false;
@@ -420,5 +420,65 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
 
         // correctly passed all tests
         return true;
+    }
+
+
+    // constructors
+    public ClearCachesMojo() {
+    }
+
+
+    // getters / setters
+    public File getWsHome() {
+        return wsHome;
+    }
+
+    public void setWsHome(final File wsHome) {
+        this.wsHome = wsHome;
+    }
+
+    public void setWsHome(final String wsHome) {
+        this.wsHome = new File(wsHome);
+    }
+
+
+    public String getWsVersion() {
+        return wsVersion;
+    }
+
+    public void setWsVersion(final String wsVersion) {
+        this.wsVersion = wsVersion;
+    }
+
+    public String getAppServerProfile() {
+        return appServerProfile;
+    }
+
+    public void setAppServerProfile(final String appServerProfile) {
+        this.appServerProfile = appServerProfile;
+    }
+
+    public String getAppServer() {
+        return appServer;
+    }
+
+    public void setAppServer(final String appServer) {
+        this.appServer = appServer;
+    }
+
+    public String getCell() {
+        return cell;
+    }
+
+    public void setCell(final String cell) {
+        this.cell = cell;
+    }
+
+    public String getNode() {
+        return node;
+    }
+
+    public void setNode(final String node) {
+        this.node = node;
     }
 }
