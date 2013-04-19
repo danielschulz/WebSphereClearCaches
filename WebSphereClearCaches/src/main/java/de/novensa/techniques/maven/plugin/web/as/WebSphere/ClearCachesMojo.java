@@ -187,6 +187,16 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         runNativeFile(scriptLocation);
     }
 
+
+    /**
+     * Run the script given. In case of an failure abort the processing and print out the salient exception.
+     *
+     * @param file The reference to the script to run
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     *                                of the plugin
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     *                              of the plugin
+     */
     private void runNativeFile(final File file) throws MojoFailureException, MojoExecutionException {
         Runtime runtime = Runtime.getRuntime();
         try {
@@ -194,6 +204,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             ranTheScript = true;
         } catch (IOException e) {
             ranTheScript = false;
+            log(WARN, SCRIPT_HAS_NOT_BEEN_EXECUTED);
             log(e);
         }
     }
@@ -205,7 +216,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      *
      * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
      *                                of the plugin
-     * @throws MojoFailureException   This exception will be thrown when there´s a date mistaken
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     *                              of the plugin
      */
     private void mavenSummary() throws MojoFailureException, MojoExecutionException {
 
@@ -286,12 +298,29 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         }
     }
 
+    /**
+     * Checks the file to be an existing directory. If not an <code>IllegalStateException</code> exception will
+     * be thrown.
+     *
+     * @param effectivePath The reference to the directory to look for
+     */
     private void possiblyReportNotExistingParent(final File effectivePath) {
         if (!effectivePath.exists() || !effectivePath.isDirectory()) {
             throw new IllegalStateException(String.format(ErrorMessages.DIRECTORY_DOES_NOT_EXIST, effectivePath));
         }
     }
 
+
+    /**
+     * Deletes the file referred and keeps track on the success rate counter <code>cleanedCount</code>. Cleans files
+     * and directories as well. Checks the privileges and logs or aborts runtime if necessary.
+     *
+     * @param file The file or directory to delete
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     *                                of the plugin
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     *                              of the plugin
+     */
     private void cleanFile(final File file) throws MojoFailureException, MojoExecutionException {
         // check permissions
         if (!file.canWrite()) {
@@ -301,6 +330,9 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         // is still or just clean
         if (!file.exists()) {
             log(INFO, String.format(RESOURCE_IS_STILL_OR_JUST_CLEAN, file));
+
+            // if the file does not exist anymore it shall not appear in the not-able-to-clean list summarizing the
+            // execution
             cleanedCount++;
             return;
         }
@@ -317,15 +349,29 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         }
     }
 
+    /**
+     * This forces the deletion of the file. Safe-delete with check returned.
+     *
+     * @param file The reference to the file to delete
+     * @return true iff the file was successfully deleted and does not exist anymore
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     *                                of the plugin
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     *                              of the plugin
+     */
     private boolean forceDeleteResource(final File file) throws MojoFailureException, MojoExecutionException {
         if (file.isDirectory()) {
+            // directories
             try {
                 FileUtils.deleteDirectory(file);
             } catch (IOException e) {
                 return false;
             }
+            // safe-check
             return !file.exists();
         } else {
+            // files
+            // safe-check
             return file.delete();
         }
     }

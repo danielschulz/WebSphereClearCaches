@@ -18,8 +18,9 @@ public abstract class MavenLogger extends AbstractMojo {
      *
      * @param throwable The exception caught
      * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
-     * of the plugin
-     * @throws MojoFailureException This exception will be thrown when there´s a date mistaken
+     *                                of the plugin
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     *                              of the plugin
      */
     public final void log(final Throwable throwable) throws MojoExecutionException, MojoFailureException {
         getLog().error(throwable);
@@ -33,8 +34,9 @@ public abstract class MavenLogger extends AbstractMojo {
      * @param lvl The type of message: info, warn, debug, error
      * @param mavenMessage The message details to write
      * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
-     * of the plugin
-     * @throws MojoFailureException This exception will be thrown when there´s a date mistaken
+     *                                of the plugin
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     *                              of the plugin
      */
     public final void log(final LogLvl lvl, final String mavenMessage)
             throws MojoExecutionException, MojoFailureException {
