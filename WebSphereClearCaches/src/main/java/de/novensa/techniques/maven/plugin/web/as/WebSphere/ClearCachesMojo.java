@@ -7,7 +7,7 @@ import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphere
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.ExtractEffectivePaths;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.WebSphereVersionUtils.WebSphereVersionUtils;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -139,6 +139,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             wsHome = ExtractEffectivePaths.getWsHome(wsHome, wsParsedVersion);
             wsHomeCanonical = wsHome.getCanonicalPath();
         } catch (IOException e) {
+            log(WARN, FILE_CANNOT_BE_RETRIEVED_ITS_CANONICAL_PATH_FROM);
             log(e.fillInStackTrace());
         }
 
@@ -234,8 +235,10 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             if (persistedFiles.size() > 0) {
 
                 final String separator = LINE_BREAK + TABULATOR + TABULATOR + TABULATOR;
-                Joiner joiner = Joiner.on(separator);
-                result.append(separator).append(joiner.join(persistedFiles));
+                final Joiner joiner = Joiner.on(separator);
+                // intro text and all files listed below (separator is used as indent)
+                result.append(separator).append(InfoMessages.SUMMARY_FILES_NOT_DELETED)
+                        .append(separator).append(joiner.join(persistedFiles));
             }
         }
 
@@ -363,7 +366,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
         if (file.isDirectory()) {
             // directories
             try {
-                FileUtils.deleteDirectory(file);
+                FileDeleteStrategy strategy = FileDeleteStrategy.FORCE;
+                strategy.delete(file);
             } catch (IOException e) {
                 return false;
             }

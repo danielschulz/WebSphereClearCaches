@@ -16,4 +16,6 @@ public interface InfoMessages {
             "%s of %s files cleaned but the script was not executed.";
     // first %s: cleaned files c
     // second %s: amount of files to clean n, where n >= c
+
+    static final String SUMMARY_FILES_NOT_DELETED = "These files could not be deleted:";
 }

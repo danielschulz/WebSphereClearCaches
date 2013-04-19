@@ -1,6 +1,8 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.LocalRunner;
 
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.ClearCachesMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * This is the local configuration to run this plugin in local mode and to test run it.
@@ -31,5 +33,19 @@ public class MasterConfiguration implements PrivateMasterConfigurationsConstants
      */
     public static ClearCachesMojo getMasterConfiguration() {
         return mojo;
+    }
+
+
+    /**
+     * If you want to run this plugin locally please do so with this configuration.
+     *
+     * @param args Unused command line arguments
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     *                                of the plugin
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     *                              of the plugin
+     */
+    public static void main(String[] args) throws MojoFailureException, MojoExecutionException {
+        mojo.execute();
     }
 }
