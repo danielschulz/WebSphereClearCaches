@@ -1,6 +1,6 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.LocalRunner.MasterConfiguration;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.localRunner.MasterConfiguration;
 import junit.framework.TestCase;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;

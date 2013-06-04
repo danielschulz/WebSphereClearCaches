@@ -2,11 +2,11 @@ package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
 import com.google.common.base.Joiner;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.*;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.ExtractEffectivePaths;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.WebSphereVersionUtils.WebSphereVersionUtils;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.LogLvl;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.fileUtils.ExtractEffectivePaths;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.fileUtils.WebSphereVersionDependingPathsWithinWsHome;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.webSphereVersionUtils.WebSphereVersionUtils;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.WIN_OS;
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl.*;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.LogLvl.*;
 
 /**
  * This class is responsible for clearing th temp caches in WebSphere Application Servers. The procedure is based on the IBM document

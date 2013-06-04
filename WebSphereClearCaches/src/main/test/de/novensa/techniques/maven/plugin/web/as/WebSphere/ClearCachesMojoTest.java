@@ -1,6 +1,6 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.LogLvl;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.LogLvl;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
