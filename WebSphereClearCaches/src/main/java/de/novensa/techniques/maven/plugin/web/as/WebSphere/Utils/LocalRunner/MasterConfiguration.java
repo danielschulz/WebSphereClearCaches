@@ -1,4 +1,4 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.LocalRunner;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.localRunner;
 
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.ClearCachesMojo;
 import org.apache.maven.plugin.MojoExecutionException;

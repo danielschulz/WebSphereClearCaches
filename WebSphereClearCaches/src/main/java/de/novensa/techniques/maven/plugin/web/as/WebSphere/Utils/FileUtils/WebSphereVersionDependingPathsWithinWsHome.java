@@ -1,15 +1,15 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.FileUtils;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.fileUtils;
 
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.WebSphereVersion;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.SCRIPT_LOCATION_WITHIN_WS_HOME;
 import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.UNIX_AND_WINDOWS_SCRIPT_EXTENSIONS;
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.Enums.WebSphereVersion.WAS_6v1;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.WebSphereVersion.WAS_6v1;
 
 /**
  * This interface supplies a effective paths within WS Home depending on your WebSphere version.
