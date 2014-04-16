@@ -1,7 +1,12 @@
 package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
 import com.google.common.base.Joiner;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.*;
+
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.ErrorMessages;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.InfoMessages;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.MavenLogger;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.LogLvl;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.WebSphereVersion;
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.fileUtils.ExtractEffectivePaths;
@@ -101,6 +106,11 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
     private boolean ranTheScript = false;
     private boolean scriptShallRun = true;
 
+    // constants
+    public static final String WAS_DIR_NAME_PROFILES = "profiles";
+    private final static Joiner JOINER = Joiner.on(FILE_SEPARATOR);
+
+
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -148,8 +158,9 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
                     (new WebSphereVersionDependingPathsWithinWsHome(wsParsedVersion, appServer, cell, node))
                             .getPathsWithinWsHome();
 
+
             final String locationsRelSteam =
-                    FILE_SEPARATOR + "profiles" + FILE_SEPARATOR + appServerProfile + FILE_SEPARATOR;
+                    JOINER.join(new String[] {WAS_DIR_NAME_PROFILES, appServerProfile});
             final String wsHomeProfileStem =
                     wsHomeCanonical +
                     locationsRelSteam;// location´s relative stem -- what does not change for any cleaning item
