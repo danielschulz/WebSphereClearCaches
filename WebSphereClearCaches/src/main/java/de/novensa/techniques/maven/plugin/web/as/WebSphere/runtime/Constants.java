@@ -1,7 +1,7 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime;
 
 /**
- * Delivers constants for the runtime and initialization of the plugin.
+ * Delivers constants for the Runtime and initialization of the plugin.
  *
  * @author Daniel Schulz
  */

@@ -1,4 +1,4 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime;
 
 /**
  * Here the plugin will find all kinds of information messages needed while processing the goal.

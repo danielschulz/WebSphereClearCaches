@@ -1,6 +1,6 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.LogLvl;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.Enums.LogLvl;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -17,9 +17,9 @@ public abstract class MavenLogger extends AbstractMojo {
      * Writes the exception details as error message to the log.
      *
      * @param throwable The exception caught
-     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
-     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the Runtime
      *                              of the plugin
      */
     public final void log(final Throwable throwable) throws MojoExecutionException, MojoFailureException {
@@ -33,9 +33,9 @@ public abstract class MavenLogger extends AbstractMojo {
      *
      * @param lvl The type of message: info, warn, debug, error
      * @param mavenMessage The message details to write
-     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
-     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoFailureException This exception will be thrown when there is an exception regarding the Runtime
      *                              of the plugin
      */
     public final void log(final LogLvl lvl, final String mavenMessage)
