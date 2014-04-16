@@ -1,4 +1,4 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.Enums;
 
 /**
  * Identifies the WebSphere versions.

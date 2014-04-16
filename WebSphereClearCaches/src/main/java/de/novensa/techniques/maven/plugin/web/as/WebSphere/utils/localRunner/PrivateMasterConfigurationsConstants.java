@@ -1,4 +1,4 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.localRunner;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.LocalRunner;
 
 /**
 	* This class is locally valid.

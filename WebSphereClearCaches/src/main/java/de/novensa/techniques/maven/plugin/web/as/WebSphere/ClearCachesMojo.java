@@ -2,16 +2,16 @@ package de.novensa.techniques.maven.plugin.web.as.WebSphere;
 
 import com.google.common.base.Joiner;
 
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.ErrorMessages;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.InfoMessages;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.MavenLogger;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.LogLvl;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.WebSphereVersion;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.fileUtils.ExtractEffectivePaths;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.fileUtils.WebSphereVersionDependingPathsWithinWsHome;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.webSphereVersionUtils.WebSphereVersionUtils;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime.Constants;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime.ErrorMessages;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime.InfoMessages;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime.MavenLogger;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime.RuntimeData;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.Enums.LogLvl;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.Enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.FileUtils.ExtractEffectivePaths;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.FileUtils.WebSphereVersionDependingPathsWithinWsHome;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.WebSphereVersionUtils.WebSphereVersionUtils;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.Constants.WIN_OS;
-import static de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.LogLvl.*;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime.Constants.WIN_OS;
+import static de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.Enums.LogLvl.*;
 
 /**
  * This class is responsible for clearing th temp caches in WebSphere Application Servers. The procedure is based on the IBM document
@@ -115,7 +115,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         // just warn and stop on real problem -- some missing values may not cause the task to be impossible and may
-        // be learned to solve on runtime in future versions
+        // be learned to solve on Runtime in future versions
         if (null == wsHome || null == wsVersion ||
                 null == appServerProfile || null == appServer || null == cell || null == node) {
             log(WARN, PLUGIN_REQUIRED_FIELDS_NOT_PROVIDED);
@@ -203,9 +203,9 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * Run the script given. In case of an failure abort the processing and print out the salient exception.
      *
      * @param file The reference to the script to run
-     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
-     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
      */
     private void runNativeFile(final File file) throws MojoFailureException, MojoExecutionException {
@@ -222,12 +222,12 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
 
 
     /**
-     * This method summarizes the runtime in the maven log. There will be information about cleaned files and whether
+     * This method summarizes the Runtime in the maven log. There will be information about cleaned files and whether
      * the clearClasses script ran or not.
      *
-     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
-     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
      */
     private void mavenSummary() throws MojoFailureException, MojoExecutionException {
@@ -326,12 +326,12 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
 
     /**
      * Deletes the file referred and keeps track on the success rate counter <code>cleanedCount</code>. Cleans files
-     * and directories as well. Checks the privileges and logs or aborts runtime if necessary.
+     * and directories as well. Checks the privileges and logs or aborts Runtime if necessary.
      *
      * @param file The file or directory to delete
-     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
-     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
      */
     private void cleanFile(final File file) throws MojoFailureException, MojoExecutionException {
@@ -367,9 +367,9 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      *
      * @param file The reference to the file to delete
      * @return true iff the file was successfully deleted and does not exist anymore
-     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoExecutionException This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
-     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the runtime
+     * @throws MojoFailureException   This exception will be thrown when there is an exception regarding the Runtime
      *                                of the plugin
      */
     private boolean forceDeleteResource(final File file) throws MojoFailureException, MojoExecutionException {

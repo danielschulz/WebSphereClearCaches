@@ -1,8 +1,8 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.fileUtils;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.FileUtils;
 
 import de.novensa.techniques.maven.plugin.web.as.WebSphere.ClearCachesMojo;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.runtime.RuntimeData;
-import de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums.WebSphereVersion;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Runtime.RuntimeData;
+import de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.Enums.WebSphereVersion;
 
 import java.io.File;
 import java.io.IOException;

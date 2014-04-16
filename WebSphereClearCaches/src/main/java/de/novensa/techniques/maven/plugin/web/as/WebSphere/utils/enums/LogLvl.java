@@ -1,4 +1,4 @@
-package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums;
+package de.novensa.techniques.maven.plugin.web.as.WebSphere.Utils.Enums;
 
 /**
  * The needed logging levels from maven in this plugin.
@@ -6,5 +6,5 @@ package de.novensa.techniques.maven.plugin.web.as.WebSphere.utils.enums;
  * @author Daniel Schulz
  */
 public enum LogLvl {
-    INFO, WARN, ERROR, DEBUG
+    INFO, WARN, ERROR, @SuppressWarnings("UnusedDeclaration") DEBUG
 }
