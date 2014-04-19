@@ -1,0 +1,5 @@
+target/**
+WebSphereClearCaches/.idea/**
+WebSphereClearCaches/classes/**
+WebSphereClearCaches/target/**
+WebSphereClearCaches/WebSphereClearCaches.iml
