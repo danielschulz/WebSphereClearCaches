@@ -14,7 +14,7 @@ public class Constants implements RuntimeData {
     public static final String WIN_OS = "Windows";
 
     // script location
-    public static final String SCRIPT_LOCATION_WITHIN_WS_HOME = "bin" + FILE_SEPARATOR + "clearClassCache.%s";
+    public static final String SCRIPT_LOCATION_WITHIN_WS_HOME = FILE_SEPARATOR + "bin" + FILE_SEPARATOR + "clearClassCache.%s";
     // the generic file extension may be replaced with fitting the UNIX_AND_WINDOWS_SCRIPT_EXTENSIONS entry according
     public static final String[] UNIX_AND_WINDOWS_SCRIPT_EXTENSIONS = {"sh", "bat"};
 }

@@ -161,8 +161,8 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             final String locationsRelSteam =
                     JOINER.join(new String[]{WAS_DIR_NAME_PROFILES, appServerProfile});
             final String wsHomeProfileStem =
-                    wsHomeCanonical +
-                            locationsRelSteam;// location´s relative stem -- what does not change for any cleaning item
+                    JOINER.join(wsHomeCanonical,
+                            locationsRelSteam);// location´s relative stem -- what does not change for any cleaning item
 
             final File wsHomeProfileStemFile = new File(wsHomeProfileStem);
             if (!wsHomeProfileStemFile.exists()) {
@@ -171,7 +171,7 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
             }
 
             for (String cleaningItem : listOfCleaningItems) {
-                processFile(wsHomeProfileStem + cleaningItem);
+                processFile(JOINER.join(wsHomeProfileStem, cleaningItem));
             }
 
 
@@ -402,11 +402,9 @@ public class ClearCachesMojo extends MavenLogger implements RuntimeData, ErrorMe
      * dropEndingString("Albert Einstein", "Einstein") -> "Albert ")
      */
     public static String dropEndingString(final String baseString, final String endingString) {
-        if (null != baseString && null != endingString && baseString.endsWith(endingString)) {
-            return baseString.substring(0, baseString.length() - endingString.length());
-        } else {
-            return baseString;
-        }
+        return null != baseString && null != endingString && baseString.endsWith(endingString) ?
+                baseString.substring(0, baseString.length() - endingString.length()) :
+                baseString;
     }
 
 
